@@ -164,22 +164,144 @@ button {
 }
 
 .courseRow {
-  display: grid;
-  grid-template-columns: 3em 1fr;
+  display: flex;
   gap: 8px;
   align-items: center;
 }
 
 .courseRow select {
-  width: 100%;
+  flex: 1;
   margin: 0;
 }
 
 .courseLabel {
+  width: 3em;
+  flex-shrink: 0;
   font-size: .82rem;
   font-weight: 700;
   color: #5f4522;
   text-align: right;
+}
+
+.infoBtn {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  padding: 6px;
+  color: #7c5f35;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+}
+
+.infoBtn:hover {
+  background: #f1e6d2;
+}
+
+/* Popover */
+.popoverOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .45);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.popoverCard {
+  background: #fff;
+  border-radius: 24px;
+  padding: 24px;
+  max-width: 480px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  animation: popIn .18s ease-out;
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(.95) translateY(8px); }
+  to   { opacity: 1; transform: scale(1)   translateY(0); }
+}
+
+.popoverHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.popoverHeader h3 {
+  margin: 0;
+}
+
+.closeBtn {
+  flex-shrink: 0;
+  background: #f1e6d2;
+  border: none;
+  border-radius: 999px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+}
+
+.popoverDesc {
+  color: #4b5563;
+  line-height: 1.7;
+  margin-bottom: 12px;
+}
+
+/* Print */
+.printOnly { display: none; }
+
+.printRecipes {
+  margin-top: 20px;
+  padding: 20px;
+}
+
+.printRecipeItem {
+  padding: 16px 0;
+  border-top: 1px solid #e3dacb;
+  break-inside: avoid;
+}
+
+.printRecipeMeta {
+  color: #6b7280;
+  font-size: .9rem;
+  margin-bottom: 8px;
+}
+
+.printRecipeColumns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media print {
+  .noPrint  { display: none !important; }
+  .printOnly { display: block; }
+
+  .page { padding: 0; width: 100%; }
+
+  .layout { grid-template-columns: 1fr; gap: 12px; }
+
+  .hero { grid-template-columns: 1fr; }
+
+  h1 { font-size: 1.8rem; }
+
+  .panel {
+    box-shadow: none;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    break-inside: avoid;
+  }
 }
 
 .budget {

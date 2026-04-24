@@ -1,6 +1,6 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { ShoppingCart, Flame, Share2, RotateCcw } from "lucide-react";
+import { Info, Printer, ShoppingCart, Flame, Share2, RotateCcw } from "lucide-react";
 import recipes from "./recipes.json";
 import "./styles.css";
 
@@ -110,8 +110,15 @@ function App() {
   const [nights, setNights] = useState(parsed.nights);
   const [plan, setPlan] = useState(parsed.plan);
   const [tagFilter, setTagFilter] = useState("all");
+  const [activePopover, setActivePopover] = useState(null);
 
   const mealSlots = useMemo(() => generateMealSlots(nights), [nights]);
+
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === "Escape") setActivePopover(null); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, []);
 
   const tags = useMemo(() => {
     return ["all", ...Array.from(new Set(recipes.flatMap((r) => r.tags))).sort((a, b) => a.localeCompare(b, "ja"))];
@@ -131,6 +138,15 @@ function App() {
     return result;
   }, [plan, mealSlots]);
 
+  const uniqueSelectedRecipes = useMemo(() => {
+    const seen = new Set();
+    return allSelectedRecipes.filter((r) => {
+      if (seen.has(r.id)) return false;
+      seen.add(r.id);
+      return true;
+    });
+  }, [allSelectedRecipes]);
+
   const totalCost = useMemo(() => {
     return allSelectedRecipes.reduce((sum, r) => sum + Math.round(r.cost * (people / r.servings)), 0);
   }, [allSelectedRecipes, people]);
@@ -139,6 +155,10 @@ function App() {
   const grouped = groupByCategory(shoppingList);
 
   const filteredRecipes = recipes.filter((r) => tagFilter === "all" || r.tags.includes(tagFilter));
+
+  const popoverRecipe = activePopover
+    ? recipes.find((r) => r.id === plan[activePopover.slotId]?.[activePopover.courseId])
+    : null;
 
   function handleNightsChange(newNights) {
     const newSlots = generateMealSlots(newNights);
@@ -153,10 +173,14 @@ function App() {
   }
 
   function updateSlot(slotId, courseId, recipeId) {
-    setPlan((prev) => ({
-      ...prev,
-      [slotId]: { ...(prev[slotId] || {}), [courseId]: recipeId }
-    }));
+    setPlan((prev) => ({ ...prev, [slotId]: { ...(prev[slotId] || {}), [courseId]: recipeId } }));
+    setActivePopover(null);
+  }
+
+  function togglePopover(slotId, courseId) {
+    setActivePopover((prev) =>
+      prev?.slotId === slotId && prev?.courseId === courseId ? null : { slotId, courseId }
+    );
   }
 
   function copyShareUrl() {
@@ -189,7 +213,7 @@ function App() {
             GWの嬬恋村は朝晩が冷えやすい前提で、温かい肉料理・煮込み料理を多めにしています。
           </p>
         </div>
-        <div className="heroCard">
+        <div className="heroCard noPrint">
           <Flame size={28} />
           <div>
             <span>概算予算</span>
@@ -202,8 +226,8 @@ function App() {
       <main className="layout">
         <section className="panel">
           <div className="sectionHeader">
-            <h2>食事枠にレシピを割り当て</h2>
-            <div className="controls">
+            <h2>食事プラン</h2>
+            <div className="controls noPrint">
               <label>
                 泊数
                 <select value={nights} onChange={(e) => handleNightsChange(Number(e.target.value))}>
@@ -224,6 +248,7 @@ function App() {
               </label>
               <button onClick={copyShareUrl} className="secondary"><Share2 size={16} />共有URL</button>
               <button onClick={resetPlan} className="secondary"><RotateCcw size={16} />リセット</button>
+              <button onClick={() => window.print()} className="secondary"><Printer size={16} />印刷</button>
             </div>
           </div>
 
@@ -232,23 +257,38 @@ function App() {
               <div className="slot" key={slot.id}>
                 <div className="slotHeader">
                   <h3>{slot.label}</h3>
-                  <p>{slot.hint}</p>
+                  <p className="noPrint">{slot.hint}</p>
                 </div>
                 <div className="courses">
-                  {courseTypes.map((course) => (
-                    <div className="courseRow" key={course.id}>
-                      <span className="courseLabel">{course.label}</span>
-                      <select
-                        value={plan[slot.id]?.[course.id] || ""}
-                        onChange={(e) => updateSlot(slot.id, course.id, e.target.value)}
-                      >
-                        <option value="">未選択</option>
-                        {recipes.map((r) => (
-                          <option key={r.id} value={r.id}>{r.name}</option>
-                        ))}
-                      </select>
-                    </div>
-                  ))}
+                  {courseTypes.map((course) => {
+                    const selectedId = plan[slot.id]?.[course.id];
+                    const selectedName = recipes.find((r) => r.id === selectedId)?.name;
+                    return (
+                      <div className="courseRow" key={course.id}>
+                        <span className="courseLabel">{course.label}</span>
+                        <select
+                          className="noPrint"
+                          value={selectedId || ""}
+                          onChange={(e) => updateSlot(slot.id, course.id, e.target.value)}
+                        >
+                          <option value="">未選択</option>
+                          {recipes.map((r) => (
+                            <option key={r.id} value={r.id}>{r.name}</option>
+                          ))}
+                        </select>
+                        <span className="printOnly">{selectedName || "―"}</span>
+                        {selectedId && (
+                          <button
+                            className="infoBtn noPrint"
+                            onClick={() => togglePopover(slot.id, course.id)}
+                            aria-label="レシピ詳細"
+                          >
+                            <Info size={16} />
+                          </button>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             ))}
@@ -282,7 +322,38 @@ function App() {
         </section>
       </main>
 
-      <section className="panel recipesPanel">
+      {uniqueSelectedRecipes.length > 0 && (
+        <section className="printOnly printRecipes">
+          <h2>レシピ詳細</h2>
+          {uniqueSelectedRecipes.map((recipe) => (
+            <div key={recipe.id} className="printRecipeItem">
+              <h3>{recipe.name}</h3>
+              <p>{recipe.description}</p>
+              <p className="printRecipeMeta">
+                {recipe.servings}人分 ／ 約{recipe.cost.toLocaleString()}円 ／ 道具: {recipe.tools.join("・")}
+              </p>
+              <div className="printRecipeColumns">
+                <div>
+                  <h4>材料</h4>
+                  <ul>
+                    {recipe.ingredients.map((ing, idx) => (
+                      <li key={idx}>{ing.name}: {ing.amount} {ing.unit}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <h4>手順</h4>
+                  <ol>
+                    {recipe.steps.map((step, idx) => <li key={idx}>{step}</li>)}
+                  </ol>
+                </div>
+              </div>
+            </div>
+          ))}
+        </section>
+      )}
+
+      <section className="panel recipesPanel noPrint">
         <div className="sectionHeader">
           <h2>レシピ一覧</h2>
           <select value={tagFilter} onChange={(e) => setTagFilter(e.target.value)}>
@@ -321,9 +392,40 @@ function App() {
         </div>
       </section>
 
-      <footer>
+      <footer className="noPrint">
         <p>材料の単位は同じ単位だけ合算します。「適量」は買い忘れ防止項目として表示します。</p>
       </footer>
+
+      {activePopover && popoverRecipe && (
+        <div className="popoverOverlay" onClick={() => setActivePopover(null)}>
+          <div className="popoverCard" onClick={(e) => e.stopPropagation()}>
+            <div className="popoverHeader">
+              <h3>{popoverRecipe.name}</h3>
+              <button className="closeBtn" onClick={() => setActivePopover(null)}>✕</button>
+            </div>
+            <p className="popoverDesc">{popoverRecipe.description}</p>
+            <div className="tags">
+              {popoverRecipe.tags.map((tag) => <span key={tag}>{tag}</span>)}
+            </div>
+            <div className="meta">
+              <span>{popoverRecipe.servings}人分</span>
+              <span>約{popoverRecipe.cost.toLocaleString()}円</span>
+            </div>
+            <h4>材料</h4>
+            <ul>
+              {popoverRecipe.ingredients.map((ing, idx) => (
+                <li key={idx}>{ing.name}: {ing.amount} {ing.unit}</li>
+              ))}
+            </ul>
+            <h4>手順</h4>
+            <ol>
+              {popoverRecipe.steps.map((step, idx) => <li key={idx}>{step}</li>)}
+            </ol>
+            <h4>道具</h4>
+            <p>{popoverRecipe.tools.join(" / ")}</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
