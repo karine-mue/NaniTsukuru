@@ -11,7 +11,7 @@ export default function RecipePicker({ allRecipes, onSelect, onClose, onAddNew }
 
   const filtered = allRecipes.filter((r) => {
     if (tagFilter !== "all" && !r.tags.includes(tagFilter)) return false;
-    if (search && !r.name.includes(search) && !(r.description || "").includes(search)) return false;
+    if (search && !r.name.includes(search) && !(r.description || "").includes(search) && !r.tags.some((t) => t.includes(search))) return false;
     return true;
   });
 
