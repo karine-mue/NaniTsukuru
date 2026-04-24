@@ -35,3 +35,7 @@ GitHub側で以下を設定してください。
 `src/recipes.json` にレシピを追加します。
 
 材料は `itemId` と `unit` が同じものだけ合算します。
+
+## Codex smoke test
+
+Codexからブランチ作成・編集・PR作成の疎通確認を行うための変更です。
