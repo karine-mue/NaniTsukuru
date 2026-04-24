@@ -1,14 +1,10 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { Info, Printer, ShoppingCart, Flame, Share2, RotateCcw } from "lucide-react";
+import { Info, Plus, Printer, ShoppingCart, Flame, Share2, RotateCcw, X } from "lucide-react";
 import recipes from "./recipes.json";
 import "./styles.css";
 
-const courseTypes = [
-  { id: "main", label: "主菜" },
-  { id: "side", label: "副菜" },
-  { id: "soup", label: "スープ" },
-];
+const MAX_PER_SLOT = 4;
 
 const categoryOrder = [
   "肉・魚", "野菜", "乳製品", "主食", "缶詰・乾物", "調味料", "消耗品", "その他"
@@ -27,9 +23,7 @@ function generateMealSlots(nights) {
 }
 
 function initPlan(slots) {
-  return Object.fromEntries(
-    slots.map((slot) => [slot.id, Object.fromEntries(courseTypes.map((c) => [c.id, ""]))])
-  );
+  return Object.fromEntries(slots.map((slot) => [slot.id, [""]]));
 }
 
 function parsePlanFromUrl() {
@@ -38,12 +32,14 @@ function parsePlanFromUrl() {
   const validNights = [1, 2, 3, 4].includes(nights) ? nights : 2;
   const people = Number(params.get("people") || 2);
   const slots = generateMealSlots(validNights);
-  const plan = initPlan(slots);
+  const plan = {};
   for (const slot of slots) {
-    for (const course of courseTypes) {
-      const val = params.get(`${slot.id}-${course.id}`);
-      if (val) plan[slot.id][course.id] = val;
+    const items = [];
+    for (let i = 0; i < MAX_PER_SLOT; i++) {
+      const val = params.get(`${slot.id}-${i}`);
+      if (val !== null) items.push(val);
     }
+    plan[slot.id] = items.length > 0 ? items : [""];
   }
   return { plan, people: Number.isFinite(people) && people > 0 ? people : 2, nights: validNights };
 }
@@ -127,8 +123,7 @@ function App() {
   const allSelectedRecipes = useMemo(() => {
     const result = [];
     for (const slot of mealSlots) {
-      for (const course of courseTypes) {
-        const id = plan[slot.id]?.[course.id];
+      for (const id of (plan[slot.id] || [])) {
         if (id) {
           const recipe = recipes.find((r) => r.id === id);
           if (recipe) result.push(recipe);
@@ -157,7 +152,7 @@ function App() {
   const filteredRecipes = recipes.filter((r) => tagFilter === "all" || r.tags.includes(tagFilter));
 
   const popoverRecipe = activePopover
-    ? recipes.find((r) => r.id === plan[activePopover.slotId]?.[activePopover.courseId])
+    ? recipes.find((r) => r.id === plan[activePopover.slotId]?.[activePopover.index])
     : null;
 
   function handleNightsChange(newNights) {
@@ -165,21 +160,41 @@ function App() {
     setPlan((prev) => {
       const next = {};
       for (const slot of newSlots) {
-        next[slot.id] = prev[slot.id] ?? Object.fromEntries(courseTypes.map((c) => [c.id, ""]));
+        next[slot.id] = prev[slot.id] ?? [""];
       }
       return next;
     });
     setNights(newNights);
   }
 
-  function updateSlot(slotId, courseId, recipeId) {
-    setPlan((prev) => ({ ...prev, [slotId]: { ...(prev[slotId] || {}), [courseId]: recipeId } }));
+  function updateSlotItem(slotId, index, recipeId) {
+    setPlan((prev) => {
+      const items = [...(prev[slotId] || [""])];
+      items[index] = recipeId;
+      return { ...prev, [slotId]: items };
+    });
     setActivePopover(null);
   }
 
-  function togglePopover(slotId, courseId) {
+  function addSlotItem(slotId) {
+    setPlan((prev) => {
+      const items = prev[slotId] || [""];
+      if (items.length >= MAX_PER_SLOT) return prev;
+      return { ...prev, [slotId]: [...items, ""] };
+    });
+  }
+
+  function removeSlotItem(slotId, index) {
+    setPlan((prev) => {
+      const items = prev[slotId] || [""];
+      return { ...prev, [slotId]: items.filter((_, i) => i !== index) };
+    });
+    setActivePopover(null);
+  }
+
+  function togglePopover(slotId, index) {
     setActivePopover((prev) =>
-      prev?.slotId === slotId && prev?.courseId === courseId ? null : { slotId, courseId }
+      prev?.slotId === slotId && prev?.index === index ? null : { slotId, index }
     );
   }
 
@@ -188,10 +203,9 @@ function App() {
     params.set("people", String(people));
     params.set("nights", String(nights));
     for (const slot of mealSlots) {
-      for (const course of courseTypes) {
-        const val = plan[slot.id]?.[course.id];
-        if (val) params.set(`${slot.id}-${course.id}`, val);
-      }
+      (plan[slot.id] || []).forEach((id, i) => {
+        if (id) params.set(`${slot.id}-${i}`, id);
+      });
     }
     const url = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
     navigator.clipboard.writeText(url);
@@ -253,45 +267,60 @@ function App() {
           </div>
 
           <div className="slots">
-            {mealSlots.map((slot) => (
-              <div className="slot" key={slot.id}>
-                <div className="slotHeader">
-                  <h3>{slot.label}</h3>
-                  <p className="noPrint">{slot.hint}</p>
-                </div>
-                <div className="courses">
-                  {courseTypes.map((course) => {
-                    const selectedId = plan[slot.id]?.[course.id];
-                    const selectedName = recipes.find((r) => r.id === selectedId)?.name;
-                    return (
-                      <div className="courseRow" key={course.id}>
-                        <span className="courseLabel">{course.label}</span>
-                        <select
-                          className="noPrint"
-                          value={selectedId || ""}
-                          onChange={(e) => updateSlot(slot.id, course.id, e.target.value)}
-                        >
-                          <option value="">未選択</option>
-                          {recipes.map((r) => (
-                            <option key={r.id} value={r.id}>{r.name}</option>
-                          ))}
-                        </select>
-                        <span className="printOnly">{selectedName || "―"}</span>
-                        {selectedId && (
-                          <button
-                            className="infoBtn noPrint"
-                            onClick={() => togglePopover(slot.id, course.id)}
-                            aria-label="レシピ詳細"
+            {mealSlots.map((slot) => {
+              const items = plan[slot.id] || [""];
+              return (
+                <div className="slot" key={slot.id}>
+                  <div className="slotHeader">
+                    <h3>{slot.label}</h3>
+                    <p className="noPrint">{slot.hint}</p>
+                  </div>
+                  <div className="courses">
+                    {items.map((selectedId, index) => {
+                      const selectedName = recipes.find((r) => r.id === selectedId)?.name;
+                      return (
+                        <div className="courseRow" key={index}>
+                          <select
+                            className="noPrint"
+                            value={selectedId || ""}
+                            onChange={(e) => updateSlotItem(slot.id, index, e.target.value)}
                           >
-                            <Info size={16} />
-                          </button>
-                        )}
-                      </div>
-                    );
-                  })}
+                            <option value="">未選択</option>
+                            {recipes.map((r) => (
+                              <option key={r.id} value={r.id}>{r.name}</option>
+                            ))}
+                          </select>
+                          <span className="printOnly">{selectedName || "―"}</span>
+                          {selectedId && (
+                            <button
+                              className="infoBtn noPrint"
+                              onClick={() => togglePopover(slot.id, index)}
+                              aria-label="レシピ詳細"
+                            >
+                              <Info size={16} />
+                            </button>
+                          )}
+                          {items.length > 1 && (
+                            <button
+                              className="removeBtn noPrint"
+                              onClick={() => removeSlotItem(slot.id, index)}
+                              aria-label="削除"
+                            >
+                              <X size={14} />
+                            </button>
+                          )}
+                        </div>
+                      );
+                    })}
+                    {items.length < MAX_PER_SLOT && (
+                      <button className="addBtn noPrint" onClick={() => addSlotItem(slot.id)}>
+                        <Plus size={13} />料理を追加
+                      </button>
+                    )}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </section>
 

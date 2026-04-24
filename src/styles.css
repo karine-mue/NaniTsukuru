@@ -174,29 +174,37 @@ button {
   margin: 0;
 }
 
-.courseLabel {
-  width: 3em;
-  flex-shrink: 0;
-  font-size: .82rem;
-  font-weight: 700;
-  color: #5f4522;
-  text-align: right;
-}
-
-.infoBtn {
+.infoBtn,
+.removeBtn {
   flex-shrink: 0;
   background: none;
   border: none;
   padding: 6px;
-  color: #7c5f35;
   border-radius: 8px;
   display: flex;
   align-items: center;
+  color: #7c5f35;
 }
 
-.infoBtn:hover {
-  background: #f1e6d2;
+.infoBtn:hover  { background: #f1e6d2; }
+.removeBtn      { color: #9ca3af; }
+.removeBtn:hover { background: #fee2e2; color: #dc2626; }
+
+.addBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  padding: 6px 12px;
+  background: none;
+  border: 1px dashed #c8b89a;
+  border-radius: 10px;
+  color: #7c5f35;
+  font-size: .85rem;
+  cursor: pointer;
 }
+
+.addBtn:hover { background: #f1e6d2; }
 
 /* Popover */
 .popoverOverlay {
