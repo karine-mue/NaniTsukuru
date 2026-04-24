@@ -1,0 +1,455 @@
+[
+  {
+    "id": "beef-tomato-stew",
+    "name": "浅間山麓っぽい牛すじトマト煮込み",
+    "servings": 2,
+    "cost": 3600,
+    "tags": [
+      "夜向け",
+      "煮込み",
+      "肉",
+      "寒冷対応",
+      "前日仕込み可"
+    ],
+    "description": "GWの嬬恋村の冷え込み対策。牛すじをトマトと赤ワインで煮込む主役料理。翌朝ホットサンド具材に転用可。",
+    "tools": [
+      "ダッチオーブンまたは厚手鍋",
+      "バーナー",
+      "焚き火台",
+      "包丁",
+      "まな板"
+    ],
+    "steps": [
+      "可能なら前日に牛すじを下茹でしておく。",
+      "玉ねぎ・にんじん・にんにくを炒め、牛すじを加える。",
+      "トマト缶、赤ワイン、水、コンソメ、ローリエを入れて煮込む。",
+      "現地では温め直しながら20〜30分煮て味を整える。",
+      "余りは翌朝のホットサンド具材にする。"
+    ],
+    "ingredients": [
+      {
+        "itemId": "beef_tendon",
+        "name": "牛すじ",
+        "amount": 500,
+        "unit": "g",
+        "category": "肉・魚"
+      },
+      {
+        "itemId": "canned_tomato",
+        "name": "トマト缶",
+        "amount": 1,
+        "unit": "缶",
+        "category": "缶詰・乾物"
+      },
+      {
+        "itemId": "onion",
+        "name": "玉ねぎ",
+        "amount": 2,
+        "unit": "個",
+        "category": "野菜"
+      },
+      {
+        "itemId": "carrot",
+        "name": "にんじん",
+        "amount": 1,
+        "unit": "本",
+        "category": "野菜"
+      },
+      {
+        "itemId": "garlic",
+        "name": "にんにく",
+        "amount": 2,
+        "unit": "片",
+        "category": "野菜"
+      },
+      {
+        "itemId": "red_wine",
+        "name": "赤ワイン",
+        "amount": 200,
+        "unit": "ml",
+        "category": "調味料"
+      },
+      {
+        "itemId": "consomme",
+        "name": "コンソメ",
+        "amount": 2,
+        "unit": "個",
+        "category": "調味料"
+      },
+      {
+        "itemId": "bay_leaf",
+        "name": "ローリエ",
+        "amount": 1,
+        "unit": "枚",
+        "category": "調味料"
+      },
+      {
+        "itemId": "olive_oil",
+        "name": "オリーブオイル",
+        "amount": 1,
+        "unit": "適量",
+        "category": "調味料"
+      },
+      {
+        "itemId": "salt_pepper",
+        "name": "塩こしょう",
+        "amount": 1,
+        "unit": "適量",
+        "category": "調味料"
+      }
+    ]
+  },
+  {
+    "id": "pork-shoulder-cabbage-steam",
+    "name": "春キャベツと豚肩ロースの焚き火蒸し",
+    "servings": 2,
+    "cost": 2600,
+    "tags": [
+      "夜向け",
+      "肉",
+      "焚き火感",
+      "野菜多め"
+    ],
+    "description": "嬬恋キャベツの本番は夏寄りなので、GWは道中で春キャベツまたは普通キャベツを買う前提。",
+    "tools": [
+      "メスティンまたは深めフライパン",
+      "アルミホイル",
+      "バーナーまたは焚き火台"
+    ],
+    "steps": [
+      "キャベツを大きめにちぎり、鍋底に敷く。",
+      "豚肩ロースを上に並べ、きのこ、酒、塩こしょうを加える。",
+      "蓋をして弱火〜中火で15〜20分蒸す。",
+      "仕上げにバターと醤油を少量落とす。",
+      "残り汁は翌日のスープに回せる。"
+    ],
+    "ingredients": [
+      {
+        "itemId": "pork_shoulder",
+        "name": "豚肩ロース",
+        "amount": 500,
+        "unit": "g",
+        "category": "肉・魚"
+      },
+      {
+        "itemId": "cabbage",
+        "name": "春キャベツまたは普通キャベツ",
+        "amount": 0.5,
+        "unit": "玉",
+        "category": "野菜"
+      },
+      {
+        "itemId": "mushroom_mix",
+        "name": "きのこミックス",
+        "amount": 1,
+        "unit": "袋",
+        "category": "野菜"
+      },
+      {
+        "itemId": "cooking_sake",
+        "name": "料理酒",
+        "amount": 100,
+        "unit": "ml",
+        "category": "調味料"
+      },
+      {
+        "itemId": "butter",
+        "name": "バター",
+        "amount": 20,
+        "unit": "g",
+        "category": "乳製品"
+      },
+      {
+        "itemId": "soy_sauce",
+        "name": "醤油",
+        "amount": 1,
+        "unit": "適量",
+        "category": "調味料"
+      },
+      {
+        "itemId": "salt_pepper",
+        "name": "塩こしょう",
+        "amount": 1,
+        "unit": "適量",
+        "category": "調味料"
+      }
+    ]
+  },
+  {
+    "id": "cheese-hot-sand",
+    "name": "翌朝リメイクのチーズホットサンド",
+    "servings": 2,
+    "cost": 1400,
+    "tags": [
+      "朝向け",
+      "リメイク",
+      "簡単",
+      "温かい"
+    ],
+    "description": "前夜の牛すじ煮込みや蒸し豚を挟む前提。朝の片付けを軽くする。",
+    "tools": [
+      "ホットサンドメーカー",
+      "バーナー"
+    ],
+    "steps": [
+      "食パンにチーズと前夜の具材を乗せる。",
+      "必要なら黒こしょうやマスタードを少量足す。",
+      "ホットサンドメーカーで両面を焼く。",
+      "具材が汁っぽい場合は先に少し煮詰める。"
+    ],
+    "ingredients": [
+      {
+        "itemId": "bread",
+        "name": "食パン",
+        "amount": 4,
+        "unit": "枚",
+        "category": "主食"
+      },
+      {
+        "itemId": "slice_cheese",
+        "name": "スライスチーズ",
+        "amount": 4,
+        "unit": "枚",
+        "category": "乳製品"
+      },
+      {
+        "itemId": "mustard",
+        "name": "マスタード",
+        "amount": 1,
+        "unit": "適量",
+        "category": "調味料"
+      },
+      {
+        "itemId": "black_pepper",
+        "name": "黒こしょう",
+        "amount": 1,
+        "unit": "適量",
+        "category": "調味料"
+      }
+    ]
+  },
+  {
+    "id": "cold-night-soup",
+    "name": "夜寒い前提の具沢山スープ",
+    "servings": 2,
+    "cost": 1900,
+    "tags": [
+      "朝夜兼用",
+      "汁物",
+      "寒冷対応",
+      "余り食材処理"
+    ],
+    "description": "標高が高い嬬恋村の朝晩向け。余った野菜とベーコンで成立する保険メニュー。",
+    "tools": [
+      "鍋",
+      "バーナー",
+      "おたま"
+    ],
+    "steps": [
+      "ベーコンと玉ねぎを軽く炒める。",
+      "じゃがいも、にんじん、水、コンソメを加えて煮る。",
+      "火が通ったら牛乳または豆乳を加える。",
+      "塩こしょうで整え、パンや米と合わせる。"
+    ],
+    "ingredients": [
+      {
+        "itemId": "bacon",
+        "name": "ベーコン",
+        "amount": 150,
+        "unit": "g",
+        "category": "肉・魚"
+      },
+      {
+        "itemId": "potato",
+        "name": "じゃがいも",
+        "amount": 2,
+        "unit": "個",
+        "category": "野菜"
+      },
+      {
+        "itemId": "onion",
+        "name": "玉ねぎ",
+        "amount": 1,
+        "unit": "個",
+        "category": "野菜"
+      },
+      {
+        "itemId": "carrot",
+        "name": "にんじん",
+        "amount": 1,
+        "unit": "本",
+        "category": "野菜"
+      },
+      {
+        "itemId": "milk",
+        "name": "牛乳または豆乳",
+        "amount": 500,
+        "unit": "ml",
+        "category": "乳製品"
+      },
+      {
+        "itemId": "consomme",
+        "name": "コンソメ",
+        "amount": 2,
+        "unit": "個",
+        "category": "調味料"
+      },
+      {
+        "itemId": "butter",
+        "name": "バター",
+        "amount": 10,
+        "unit": "g",
+        "category": "乳製品"
+      },
+      {
+        "itemId": "salt_pepper",
+        "name": "塩こしょう",
+        "amount": 1,
+        "unit": "適量",
+        "category": "調味料"
+      }
+    ]
+  },
+  {
+    "id": "steak-garlic-rice",
+    "name": "厚切りステーキと焦がし醤油ガーリックライス",
+    "servings": 2,
+    "cost": 4200,
+    "tags": [
+      "夜向け",
+      "肉",
+      "鉄板",
+      "満足度高"
+    ],
+    "description": "単なる焼肉を避けつつ、肉を主役にするメニュー。飯盒炊飯でもパックご飯でも可。",
+    "tools": [
+      "スキレットまたは鉄板",
+      "バーナー",
+      "飯盒またはクッカー"
+    ],
+    "steps": [
+      "肉に塩を振って常温に少し戻す。",
+      "スキレットで両面を焼き、アルミホイルで休ませる。",
+      "同じ鍋でにんにく、バター、ご飯を炒める。",
+      "醤油を鍋肌から入れて焦がし、肉を乗せる。"
+    ],
+    "ingredients": [
+      {
+        "itemId": "beef_steak",
+        "name": "牛ステーキ肉",
+        "amount": 500,
+        "unit": "g",
+        "category": "肉・魚"
+      },
+      {
+        "itemId": "rice",
+        "name": "米またはパックご飯",
+        "amount": 2,
+        "unit": "人分",
+        "category": "主食"
+      },
+      {
+        "itemId": "garlic",
+        "name": "にんにく",
+        "amount": 3,
+        "unit": "片",
+        "category": "野菜"
+      },
+      {
+        "itemId": "butter",
+        "name": "バター",
+        "amount": 20,
+        "unit": "g",
+        "category": "乳製品"
+      },
+      {
+        "itemId": "soy_sauce",
+        "name": "醤油",
+        "amount": 1,
+        "unit": "適量",
+        "category": "調味料"
+      },
+      {
+        "itemId": "salt_pepper",
+        "name": "塩こしょう",
+        "amount": 1,
+        "unit": "適量",
+        "category": "調味料"
+      }
+    ]
+  },
+  {
+    "id": "camp-keema-curry",
+    "name": "スキレットキーマカレー",
+    "servings": 2,
+    "cost": 2400,
+    "tags": [
+      "昼夜兼用",
+      "肉",
+      "失敗しにくい",
+      "米に合う"
+    ],
+    "description": "煮込み時間が短く、冷えた夜にも強い。余ったらホットサンドにも転用可能。",
+    "tools": [
+      "スキレットまたはフライパン",
+      "バーナー"
+    ],
+    "steps": [
+      "玉ねぎとにんにくを炒める。",
+      "合いびき肉を加えて火を通す。",
+      "トマト缶、カレー粉、コンソメを加えて煮詰める。",
+      "米またはパンと合わせる。"
+    ],
+    "ingredients": [
+      {
+        "itemId": "minced_meat",
+        "name": "合いびき肉",
+        "amount": 400,
+        "unit": "g",
+        "category": "肉・魚"
+      },
+      {
+        "itemId": "onion",
+        "name": "玉ねぎ",
+        "amount": 1,
+        "unit": "個",
+        "category": "野菜"
+      },
+      {
+        "itemId": "garlic",
+        "name": "にんにく",
+        "amount": 2,
+        "unit": "片",
+        "category": "野菜"
+      },
+      {
+        "itemId": "canned_tomato",
+        "name": "トマト缶",
+        "amount": 1,
+        "unit": "缶",
+        "category": "缶詰・乾物"
+      },
+      {
+        "itemId": "curry_powder",
+        "name": "カレー粉",
+        "amount": 2,
+        "unit": "大さじ",
+        "category": "調味料"
+      },
+      {
+        "itemId": "consomme",
+        "name": "コンソメ",
+        "amount": 1,
+        "unit": "個",
+        "category": "調味料"
+      },
+      {
+        "itemId": "rice",
+        "name": "米またはパックご飯",
+        "amount": 2,
+        "unit": "人分",
+        "category": "主食"
+      }
+    ]
+  }
+]
