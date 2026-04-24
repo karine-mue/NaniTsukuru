@@ -354,6 +354,13 @@ button {
 
 .pickerFilters input[type="search"] {
   flex: 1;
+  min-width: 0;
+}
+
+.pickerFilters select {
+  flex-shrink: 0;
+  max-width: 130px;
+  min-width: 0;
 }
 
 .pickerList {
@@ -429,6 +436,11 @@ button {
   display: flex;
   flex-direction: column;
   animation: popIn .18s ease-out;
+}
+
+.editorModal > .popoverHeader {
+  padding: 20px 24px;
+  flex-shrink: 0;
 }
 
 .editorBody {
