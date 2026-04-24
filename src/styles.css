@@ -312,6 +312,252 @@ button {
   }
 }
 
+/* Recipe select button in slots */
+.recipeSelectBtn {
+  flex: 1;
+  text-align: left;
+  background: #fff;
+  border: 1px solid #d7cec0;
+  border-radius: 12px;
+  padding: 10px 12px;
+  color: #9ca3af;
+  font-size: .95rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.recipeSelectBtn.selected {
+  color: #1f2933;
+  border-color: #c8b89a;
+  background: #fffaf3;
+}
+
+/* Recipe picker modal */
+.pickerModal {
+  background: #fff;
+  border-radius: 24px;
+  padding: 24px;
+  max-width: 560px;
+  width: 100%;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  animation: popIn .18s ease-out;
+}
+
+.pickerFilters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.pickerFilters input[type="search"] {
+  flex: 1;
+}
+
+.pickerList {
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.pickerItem {
+  width: 100%;
+  text-align: left;
+  background: #fffaf3;
+  border: 1px solid #e3dacb;
+  border-radius: 16px;
+  padding: 12px 14px;
+}
+
+.pickerItem:hover {
+  background: #f1e6d2;
+  border-color: #c8b89a;
+}
+
+.pickerItemName {
+  font-weight: 700;
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.pickerItemDesc {
+  font-size: .88rem;
+  color: #4b5563;
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.pickerItemMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: .85rem;
+  color: #6b7280;
+}
+
+.pickerFooter {
+  padding-top: 12px;
+  border-top: 1px solid #e3dacb;
+  margin-top: 12px;
+}
+
+/* Custom recipe badge */
+.customBadge {
+  background: #d1fae5;
+  color: #065f46;
+  border-radius: 999px;
+  padding: 2px 7px;
+  font-size: .75rem;
+  font-weight: 700;
+}
+
+/* Recipe editor modal */
+.editorModal {
+  background: #fff;
+  border-radius: 24px;
+  max-width: 600px;
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  animation: popIn .18s ease-out;
+}
+
+.editorBody {
+  overflow-y: auto;
+  flex: 1;
+  padding: 0 24px;
+}
+
+.editorSection {
+  padding: 16px 0;
+  border-bottom: 1px solid #e3dacb;
+}
+
+.editorSection:last-child {
+  border-bottom: none;
+}
+
+.editorSection h4 {
+  margin: 0 0 12px;
+  color: #5f4522;
+}
+
+.editorField {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.editorField label {
+  font-size: .88rem;
+  font-weight: 600;
+  color: #4b5563;
+}
+
+.editorField label small {
+  font-weight: 400;
+  color: #9ca3af;
+  margin-left: 4px;
+}
+
+.editorField input,
+.editorField textarea,
+.editorField select {
+  width: 100%;
+}
+
+.editorRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.editorErrors {
+  background: #fef2f2;
+  border: 1px solid #fca5a5;
+  border-radius: 12px;
+  padding: 10px 14px;
+  margin: 0 24px 12px;
+}
+
+.editorErrors p {
+  margin: 0;
+  color: #dc2626;
+  font-size: .9rem;
+}
+
+.editorFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 16px 24px;
+  border-top: 1px solid #e3dacb;
+}
+
+/* Ingredient table */
+.ingredientTable {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.ingredientHeader,
+.ingredientRow {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.4fr auto;
+  gap: 6px;
+  align-items: center;
+}
+
+.ingredientHeader {
+  font-size: .8rem;
+  font-weight: 700;
+  color: #6b7280;
+  padding: 0 2px;
+}
+
+.ingredientRow input,
+.ingredientRow select {
+  padding: 6px 8px;
+  font-size: .9rem;
+}
+
+/* Primary button */
+button.primary {
+  background: #7c5f35;
+  color: #fff;
+  border-color: #7c5f35;
+  font-weight: 700;
+}
+
+button.primary:hover {
+  background: #5f4522;
+  border-color: #5f4522;
+}
+
+/* Recipe card header */
+.recipeCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.recipeCardHeader h3 {
+  margin: 0;
+}
+
 .budget {
   display: inline-flex;
   gap: 6px;
