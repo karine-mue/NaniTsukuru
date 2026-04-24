@@ -245,11 +245,13 @@ function App() {
     <div className="page">
       <header className="hero">
         <div>
-          <p className="eyebrow">Tsumagoi Camp / {nights}泊{nights + 1}日 / {people}人</p>
-          <h1>キャンプ飯プランナー</h1>
+          <p className="eyebrow">{nights}泊{nights + 1}日 / {people}人</p>
+          <h1>NaniTsukuru</h1>
           <p className="lead">
-            レシピを朝昼晩に割り当てると、買い物リストと概算予算を自動集計します。
-            GWの嬬恋村は朝晩が冷えやすい前提で、温かい肉料理・煮込み料理を多めにしています。
+            少人数キャンプ向けの献立・買い物リスト作成アプリです。朝昼晩の食事枠にレシピを割り当てると、材料をカテゴリ別に集計して買い物リストを作成します。
+          </p>
+          <p className="lead">
+            収録レシピはGW・群馬県嬬恋村のキャンプを想定しており、標高が高く朝晩が冷える前提で煮込み料理やスープを多めにしています。基本レシピは2人分で、人数変更で材料量を目安として自動換算します。
           </p>
         </div>
         <div className="heroCard noPrint">
@@ -432,7 +434,7 @@ function App() {
       </section>
 
       <footer className="noPrint">
-        <p>材料の単位は同じ単位だけ合算します。「適量」は買い忘れ防止項目として表示します。</p>
+        <p>材料量は目安です。缶詰・調味料など購入単位のあるものは実際の量に合わせて調整してください。同じ単位のものだけ合算し、「適量」は買い忘れ防止として表示します。</p>
       </footer>
 
       {pickerOpen && (
