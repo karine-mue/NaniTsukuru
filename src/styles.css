@@ -147,22 +147,39 @@ button {
   background: #fffaf3;
 }
 
-.slot h3 {
+.slotHeader h3 {
   margin: 0 0 4px;
 }
 
-.slot p {
+.slotHeader p {
   margin: 0;
   color: #6b7280;
+  font-size: .9rem;
 }
 
-.slot select {
+.courses {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.courseRow {
+  display: grid;
+  grid-template-columns: 3em 1fr;
+  gap: 8px;
+  align-items: center;
+}
+
+.courseRow select {
   width: 100%;
-  margin: 12px 0;
+  margin: 0;
 }
 
-.selectedNote {
-  line-height: 1.6;
+.courseLabel {
+  font-size: .82rem;
+  font-weight: 700;
+  color: #5f4522;
+  text-align: right;
 }
 
 .budget {

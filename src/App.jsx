@@ -4,24 +4,48 @@ import { ShoppingCart, Flame, Share2, RotateCcw } from "lucide-react";
 import recipes from "./recipes.json";
 import "./styles.css";
 
-const mealSlots = [
-  { id: "d1-dinner", label: "1日目 夜", hint: "到着後。主役料理向き" },
-  { id: "d2-breakfast", label: "2日目 朝", hint: "温かい・簡単重視" },
-  { id: "d2-lunch", label: "2日目 昼", hint: "軽め/残り物でも可" },
-  { id: "d2-dinner", label: "2日目 夜", hint: "煮込み・肉料理向き" },
-  { id: "d3-breakfast", label: "3日目 朝", hint: "撤収前。片付け軽め" }
+const courseTypes = [
+  { id: "main", label: "主菜" },
+  { id: "side", label: "副菜" },
+  { id: "soup", label: "スープ" },
 ];
 
 const categoryOrder = [
   "肉・魚", "野菜", "乳製品", "主食", "缶詰・乾物", "調味料", "消耗品", "その他"
 ];
 
+function generateMealSlots(nights) {
+  const days = nights + 1;
+  const slots = [{ id: "d1-dinner", label: "1日目 夜", hint: "到着後。主役料理向き" }];
+  for (let d = 2; d < days; d++) {
+    slots.push({ id: `d${d}-breakfast`, label: `${d}日目 朝`, hint: "温かい・簡単重視" });
+    slots.push({ id: `d${d}-lunch`,     label: `${d}日目 昼`, hint: "軽め/残り物でも可" });
+    slots.push({ id: `d${d}-dinner`,    label: `${d}日目 夜`, hint: "煮込み・肉料理向き" });
+  }
+  slots.push({ id: `d${days}-breakfast`, label: `${days}日目 朝`, hint: "撤収前。片付け軽め" });
+  return slots;
+}
+
+function initPlan(slots) {
+  return Object.fromEntries(
+    slots.map((slot) => [slot.id, Object.fromEntries(courseTypes.map((c) => [c.id, ""]))])
+  );
+}
+
 function parsePlanFromUrl() {
   const params = new URLSearchParams(window.location.search);
-  const initial = {};
-  for (const slot of mealSlots) initial[slot.id] = params.get(slot.id) || "";
+  const nights = Number(params.get("nights") || 2);
+  const validNights = [1, 2, 3, 4].includes(nights) ? nights : 2;
   const people = Number(params.get("people") || 2);
-  return { plan: initial, people: Number.isFinite(people) && people > 0 ? people : 2 };
+  const slots = generateMealSlots(validNights);
+  const plan = initPlan(slots);
+  for (const slot of slots) {
+    for (const course of courseTypes) {
+      const val = params.get(`${slot.id}-${course.id}`);
+      if (val) plan[slot.id][course.id] = val;
+    }
+  }
+  return { plan, people: Number.isFinite(people) && people > 0 ? people : 2, nights: validNights };
 }
 
 function formatAmount(n) {
@@ -36,7 +60,6 @@ function scaleAmount(amount, recipeServings, people) {
 
 function buildShoppingList(selectedRecipes, people) {
   const map = new Map();
-
   for (const recipe of selectedRecipes) {
     for (const ing of recipe.ingredients) {
       const key = `${ing.itemId}__${ing.unit}`;
@@ -57,23 +80,18 @@ function buildShoppingList(selectedRecipes, people) {
       item.usedIn.push(recipe.name);
     }
   }
-
   const rows = Array.from(map.values()).map((item) => ({
     ...item,
     amountLabel: typeof item.amount === "number"
       ? `${formatAmount(item.amount)} ${item.unit}`
       : Array.from(new Set(item.amount)).join(" / ")
   }));
-
   rows.sort((a, b) => {
-    const ca = categoryOrder.indexOf(a.category);
-    const cb = categoryOrder.indexOf(b.category);
-    const oa = ca === -1 ? 999 : ca;
-    const ob = cb === -1 ? 999 : cb;
-    if (oa !== ob) return oa - ob;
+    const oa = categoryOrder.indexOf(a.category);
+    const ob = categoryOrder.indexOf(b.category);
+    if ((oa === -1 ? 999 : oa) !== (ob === -1 ? 999 : ob)) return (oa === -1 ? 999 : oa) - (ob === -1 ? 999 : ob);
     return a.name.localeCompare(b.name, "ja");
   });
-
   return rows;
 }
 
@@ -89,37 +107,67 @@ function groupByCategory(items) {
 function App() {
   const parsed = parsePlanFromUrl();
   const [people, setPeople] = useState(parsed.people);
+  const [nights, setNights] = useState(parsed.nights);
   const [plan, setPlan] = useState(parsed.plan);
   const [tagFilter, setTagFilter] = useState("all");
+
+  const mealSlots = useMemo(() => generateMealSlots(nights), [nights]);
 
   const tags = useMemo(() => {
     return ["all", ...Array.from(new Set(recipes.flatMap((r) => r.tags))).sort((a, b) => a.localeCompare(b, "ja"))];
   }, []);
 
-  const selectedRecipes = useMemo(() => {
-    return mealSlots
-      .map((slot) => recipes.find((r) => r.id === plan[slot.id]))
-      .filter(Boolean);
-  }, [plan]);
+  const allSelectedRecipes = useMemo(() => {
+    const result = [];
+    for (const slot of mealSlots) {
+      for (const course of courseTypes) {
+        const id = plan[slot.id]?.[course.id];
+        if (id) {
+          const recipe = recipes.find((r) => r.id === id);
+          if (recipe) result.push(recipe);
+        }
+      }
+    }
+    return result;
+  }, [plan, mealSlots]);
 
   const totalCost = useMemo(() => {
-    return selectedRecipes.reduce((sum, r) => sum + Math.round(r.cost * (people / r.servings)), 0);
-  }, [selectedRecipes, people]);
+    return allSelectedRecipes.reduce((sum, r) => sum + Math.round(r.cost * (people / r.servings)), 0);
+  }, [allSelectedRecipes, people]);
 
-  const shoppingList = useMemo(() => buildShoppingList(selectedRecipes, people), [selectedRecipes, people]);
+  const shoppingList = useMemo(() => buildShoppingList(allSelectedRecipes, people), [allSelectedRecipes, people]);
   const grouped = groupByCategory(shoppingList);
 
   const filteredRecipes = recipes.filter((r) => tagFilter === "all" || r.tags.includes(tagFilter));
 
-  function updateSlot(slotId, recipeId) {
-    setPlan((prev) => ({ ...prev, [slotId]: recipeId }));
+  function handleNightsChange(newNights) {
+    const newSlots = generateMealSlots(newNights);
+    setPlan((prev) => {
+      const next = {};
+      for (const slot of newSlots) {
+        next[slot.id] = prev[slot.id] ?? Object.fromEntries(courseTypes.map((c) => [c.id, ""]));
+      }
+      return next;
+    });
+    setNights(newNights);
+  }
+
+  function updateSlot(slotId, courseId, recipeId) {
+    setPlan((prev) => ({
+      ...prev,
+      [slotId]: { ...(prev[slotId] || {}), [courseId]: recipeId }
+    }));
   }
 
   function copyShareUrl() {
     const params = new URLSearchParams();
     params.set("people", String(people));
+    params.set("nights", String(nights));
     for (const slot of mealSlots) {
-      if (plan[slot.id]) params.set(slot.id, plan[slot.id]);
+      for (const course of courseTypes) {
+        const val = plan[slot.id]?.[course.id];
+        if (val) params.set(`${slot.id}-${course.id}`, val);
+      }
     }
     const url = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
     navigator.clipboard.writeText(url);
@@ -127,14 +175,14 @@ function App() {
   }
 
   function resetPlan() {
-    setPlan(Object.fromEntries(mealSlots.map((s) => [s.id, ""])));
+    setPlan(initPlan(mealSlots));
   }
 
   return (
     <div className="page">
       <header className="hero">
         <div>
-          <p className="eyebrow">Tsumagoi Camp / 2泊3日 / 2人想定</p>
+          <p className="eyebrow">Tsumagoi Camp / {nights}泊{nights + 1}日 / {people}人</p>
           <h1>キャンプ飯プランナー</h1>
           <p className="lead">
             レシピを朝昼晩に割り当てると、買い物リストと概算予算を自動集計します。
@@ -157,6 +205,14 @@ function App() {
             <h2>食事枠にレシピを割り当て</h2>
             <div className="controls">
               <label>
+                泊数
+                <select value={nights} onChange={(e) => handleNightsChange(Number(e.target.value))}>
+                  {[1, 2, 3, 4].map((n) => (
+                    <option key={n} value={n}>{n}泊{n + 1}日</option>
+                  ))}
+                </select>
+              </label>
+              <label>
                 人数
                 <input
                   type="number"
@@ -172,24 +228,30 @@ function App() {
           </div>
 
           <div className="slots">
-            {mealSlots.map((slot) => {
-              const selected = recipes.find((r) => r.id === plan[slot.id]);
-              return (
-                <div className="slot" key={slot.id}>
-                  <div>
-                    <h3>{slot.label}</h3>
-                    <p>{slot.hint}</p>
-                  </div>
-                  <select value={plan[slot.id] || ""} onChange={(e) => updateSlot(slot.id, e.target.value)}>
-                    <option value="">未選択</option>
-                    {recipes.map((r) => (
-                      <option key={r.id} value={r.id}>{r.name}</option>
-                    ))}
-                  </select>
-                  {selected && <p className="selectedNote">{selected.description}</p>}
+            {mealSlots.map((slot) => (
+              <div className="slot" key={slot.id}>
+                <div className="slotHeader">
+                  <h3>{slot.label}</h3>
+                  <p>{slot.hint}</p>
                 </div>
-              );
-            })}
+                <div className="courses">
+                  {courseTypes.map((course) => (
+                    <div className="courseRow" key={course.id}>
+                      <span className="courseLabel">{course.label}</span>
+                      <select
+                        value={plan[slot.id]?.[course.id] || ""}
+                        onChange={(e) => updateSlot(slot.id, course.id, e.target.value)}
+                      >
+                        <option value="">未選択</option>
+                        {recipes.map((r) => (
+                          <option key={r.id} value={r.id}>{r.name}</option>
+                        ))}
+                      </select>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
         </section>
 
