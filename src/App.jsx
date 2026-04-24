@@ -1,10 +1,13 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { createRoot } from "react-dom/client";
-import { Info, Plus, Printer, ShoppingCart, Flame, Share2, RotateCcw, X } from "lucide-react";
-import recipes from "./recipes.json";
+import { Download, Info, Plus, Printer, ShoppingCart, Flame, Share2, RotateCcw, X } from "lucide-react";
+import builtinRecipes from "./recipes.json";
+import RecipePicker from "./RecipePicker";
+import RecipeEditor from "./RecipeEditor";
 import "./styles.css";
 
 const MAX_PER_SLOT = 4;
+const STORAGE_KEY = "nanitsukuru_custom_recipes";
 
 const categoryOrder = [
   "肉・魚", "野菜", "乳製品", "主食", "缶詰・乾物", "調味料", "消耗品", "その他"
@@ -26,7 +29,7 @@ function initPlan(slots) {
   return Object.fromEntries(slots.map((slot) => [slot.id, [""]]));
 }
 
-function parsePlanFromUrl() {
+function parsePlanFromUrl(allRecipes) {
   const params = new URLSearchParams(window.location.search);
   const nights = Number(params.get("nights") || 2);
   const validNights = [1, 2, 3, 4].includes(nights) ? nights : 2;
@@ -61,14 +64,7 @@ function buildShoppingList(selectedRecipes, people) {
       const key = `${ing.itemId}__${ing.unit}`;
       const scaled = scaleAmount(ing.amount, recipe.servings, people);
       if (!map.has(key)) {
-        map.set(key, {
-          itemId: ing.itemId,
-          name: ing.name,
-          category: ing.category || "その他",
-          unit: ing.unit,
-          amount: typeof scaled === "number" ? 0 : [],
-          usedIn: []
-        });
+        map.set(key, { itemId: ing.itemId, name: ing.name, category: ing.category || "その他", unit: ing.unit, amount: typeof scaled === "number" ? 0 : [], usedIn: [] });
       }
       const item = map.get(key);
       if (typeof scaled === "number") item.amount += scaled;
@@ -100,46 +96,51 @@ function groupByCategory(items) {
   }, {});
 }
 
+function loadCustomRecipes() {
+  try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); } catch { return []; }
+}
+
 function App() {
-  const parsed = parsePlanFromUrl();
+  const [customRecipes, setCustomRecipes] = useState(loadCustomRecipes);
+  const allRecipes = useMemo(() => [...builtinRecipes, ...customRecipes], [customRecipes]);
+
+  const parsed = parsePlanFromUrl(allRecipes);
   const [people, setPeople] = useState(parsed.people);
   const [nights, setNights] = useState(parsed.nights);
   const [plan, setPlan] = useState(parsed.plan);
   const [tagFilter, setTagFilter] = useState("all");
   const [activePopover, setActivePopover] = useState(null);
+  const [pickerOpen, setPickerOpen] = useState(null);
+  const [editorOpen, setEditorOpen] = useState(false);
 
   const mealSlots = useMemo(() => generateMealSlots(nights), [nights]);
 
   useEffect(() => {
-    const onKey = (e) => { if (e.key === "Escape") setActivePopover(null); };
+    const onKey = (e) => { if (e.key === "Escape") { setActivePopover(null); setPickerOpen(null); setEditorOpen(false); } };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
   const tags = useMemo(() => {
-    return ["all", ...Array.from(new Set(recipes.flatMap((r) => r.tags))).sort((a, b) => a.localeCompare(b, "ja"))];
-  }, []);
+    return ["all", ...Array.from(new Set(allRecipes.flatMap((r) => r.tags))).sort((a, b) => a.localeCompare(b, "ja"))];
+  }, [allRecipes]);
 
   const allSelectedRecipes = useMemo(() => {
     const result = [];
     for (const slot of mealSlots) {
       for (const id of (plan[slot.id] || [])) {
         if (id) {
-          const recipe = recipes.find((r) => r.id === id);
+          const recipe = allRecipes.find((r) => r.id === id);
           if (recipe) result.push(recipe);
         }
       }
     }
     return result;
-  }, [plan, mealSlots]);
+  }, [plan, mealSlots, allRecipes]);
 
   const uniqueSelectedRecipes = useMemo(() => {
     const seen = new Set();
-    return allSelectedRecipes.filter((r) => {
-      if (seen.has(r.id)) return false;
-      seen.add(r.id);
-      return true;
-    });
+    return allSelectedRecipes.filter((r) => { if (seen.has(r.id)) return false; seen.add(r.id); return true; });
   }, [allSelectedRecipes]);
 
   const totalCost = useMemo(() => {
@@ -149,19 +150,17 @@ function App() {
   const shoppingList = useMemo(() => buildShoppingList(allSelectedRecipes, people), [allSelectedRecipes, people]);
   const grouped = groupByCategory(shoppingList);
 
-  const filteredRecipes = recipes.filter((r) => tagFilter === "all" || r.tags.includes(tagFilter));
+  const filteredRecipes = allRecipes.filter((r) => tagFilter === "all" || r.tags.includes(tagFilter));
 
   const popoverRecipe = activePopover
-    ? recipes.find((r) => r.id === plan[activePopover.slotId]?.[activePopover.index])
+    ? allRecipes.find((r) => r.id === plan[activePopover.slotId]?.[activePopover.index])
     : null;
 
   function handleNightsChange(newNights) {
     const newSlots = generateMealSlots(newNights);
     setPlan((prev) => {
       const next = {};
-      for (const slot of newSlots) {
-        next[slot.id] = prev[slot.id] ?? [""];
-      }
+      for (const slot of newSlots) next[slot.id] = prev[slot.id] ?? [""];
       return next;
     });
     setNights(newNights);
@@ -176,19 +175,8 @@ function App() {
     setActivePopover(null);
   }
 
-  function addSlotItem(slotId) {
-    setPlan((prev) => {
-      const items = prev[slotId] || [""];
-      if (items.length >= MAX_PER_SLOT) return prev;
-      return { ...prev, [slotId]: [...items, ""] };
-    });
-  }
-
   function removeSlotItem(slotId, index) {
-    setPlan((prev) => {
-      const items = prev[slotId] || [""];
-      return { ...prev, [slotId]: items.filter((_, i) => i !== index) };
-    });
+    setPlan((prev) => ({ ...prev, [slotId]: (prev[slotId] || []).filter((_, i) => i !== index) }));
     setActivePopover(null);
   }
 
@@ -198,17 +186,54 @@ function App() {
     );
   }
 
+  function handlePickerSelect(recipeId) {
+    if (!pickerOpen) return;
+    const { slotId, index, isNew } = pickerOpen;
+    if (isNew) {
+      setPlan((prev) => ({ ...prev, [slotId]: [...(prev[slotId] || [""]), recipeId] }));
+    } else {
+      updateSlotItem(slotId, index, recipeId);
+    }
+    setPickerOpen(null);
+  }
+
+  function openPickerForNew(slotId) {
+    const items = plan[slotId] || [""];
+    if (items.length >= MAX_PER_SLOT) return;
+    setPickerOpen({ slotId, index: items.length, isNew: true });
+  }
+
+  function handleEditorSave(recipe) {
+    setCustomRecipes((prev) => {
+      const next = [...prev, recipe];
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      return next;
+    });
+    setEditorOpen(false);
+  }
+
+  function deleteCustomRecipe(id) {
+    if (!confirm("このレシピを削除しますか？")) return;
+    setCustomRecipes((prev) => {
+      const next = prev.filter((r) => r.id !== id);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      return next;
+    });
+  }
+
+  function exportCustomRecipes() {
+    navigator.clipboard.writeText(JSON.stringify(customRecipes, null, 2));
+    alert(`${customRecipes.length}件のレシピをJSONとしてコピーしました。\nrecipes.jsonに追加すると正式採用できます。`);
+  }
+
   function copyShareUrl() {
     const params = new URLSearchParams();
     params.set("people", String(people));
     params.set("nights", String(nights));
     for (const slot of mealSlots) {
-      (plan[slot.id] || []).forEach((id, i) => {
-        if (id) params.set(`${slot.id}-${i}`, id);
-      });
+      (plan[slot.id] || []).forEach((id, i) => { if (id) params.set(`${slot.id}-${i}`, id); });
     }
-    const url = `${window.location.origin}${window.location.pathname}?${params.toString()}`;
-    navigator.clipboard.writeText(url);
+    navigator.clipboard.writeText(`${window.location.origin}${window.location.pathname}?${params.toString()}`);
     alert("共有URLをコピーしました");
   }
 
@@ -245,20 +270,12 @@ function App() {
               <label>
                 泊数
                 <select value={nights} onChange={(e) => handleNightsChange(Number(e.target.value))}>
-                  {[1, 2, 3, 4].map((n) => (
-                    <option key={n} value={n}>{n}泊{n + 1}日</option>
-                  ))}
+                  {[1, 2, 3, 4].map((n) => <option key={n} value={n}>{n}泊{n + 1}日</option>)}
                 </select>
               </label>
               <label>
                 人数
-                <input
-                  type="number"
-                  min="1"
-                  max="12"
-                  value={people}
-                  onChange={(e) => setPeople(Number(e.target.value || 1))}
-                />
+                <input type="number" min="1" max="12" value={people} onChange={(e) => setPeople(Number(e.target.value || 1))} />
               </label>
               <button onClick={copyShareUrl} className="secondary"><Share2 size={16} />共有URL</button>
               <button onClick={resetPlan} className="secondary"><RotateCcw size={16} />リセット</button>
@@ -277,35 +294,23 @@ function App() {
                   </div>
                   <div className="courses">
                     {items.map((selectedId, index) => {
-                      const selectedName = recipes.find((r) => r.id === selectedId)?.name;
+                      const selectedName = allRecipes.find((r) => r.id === selectedId)?.name;
                       return (
                         <div className="courseRow" key={index}>
-                          <select
-                            className="noPrint"
-                            value={selectedId || ""}
-                            onChange={(e) => updateSlotItem(slot.id, index, e.target.value)}
+                          <button
+                            className={`recipeSelectBtn noPrint${selectedId ? " selected" : ""}`}
+                            onClick={() => setPickerOpen({ slotId: slot.id, index, isNew: false })}
                           >
-                            <option value="">未選択</option>
-                            {recipes.map((r) => (
-                              <option key={r.id} value={r.id}>{r.name}</option>
-                            ))}
-                          </select>
+                            {selectedName || "タップして選択"}
+                          </button>
                           <span className="printOnly">{selectedName || "―"}</span>
                           {selectedId && (
-                            <button
-                              className="infoBtn noPrint"
-                              onClick={() => togglePopover(slot.id, index)}
-                              aria-label="レシピ詳細"
-                            >
+                            <button className="infoBtn noPrint" onClick={() => togglePopover(slot.id, index)} aria-label="レシピ詳細">
                               <Info size={16} />
                             </button>
                           )}
                           {items.length > 1 && (
-                            <button
-                              className="removeBtn noPrint"
-                              onClick={() => removeSlotItem(slot.id, index)}
-                              aria-label="削除"
-                            >
+                            <button className="removeBtn noPrint" onClick={() => removeSlotItem(slot.id, index)} aria-label="削除">
                               <X size={14} />
                             </button>
                           )}
@@ -313,7 +318,7 @@ function App() {
                       );
                     })}
                     {items.length < MAX_PER_SLOT && (
-                      <button className="addBtn noPrint" onClick={() => addSlotItem(slot.id)}>
+                      <button className="addBtn noPrint" onClick={() => openPickerForNew(slot.id)}>
                         <Plus size={13} />料理を追加
                       </button>
                     )}
@@ -329,7 +334,6 @@ function App() {
             <h2>買い物リスト</h2>
             <div className="budget"><ShoppingCart size={18} /> {shoppingList.length}品目</div>
           </div>
-
           {shoppingList.length === 0 ? (
             <p className="empty">レシピを選択すると、ここに買い物リストが出ます。</p>
           ) : (
@@ -364,17 +368,11 @@ function App() {
               <div className="printRecipeColumns">
                 <div>
                   <h4>材料</h4>
-                  <ul>
-                    {recipe.ingredients.map((ing, idx) => (
-                      <li key={idx}>{ing.name}: {ing.amount} {ing.unit}</li>
-                    ))}
-                  </ul>
+                  <ul>{recipe.ingredients.map((ing, idx) => <li key={idx}>{ing.name}: {ing.amount} {ing.unit}</li>)}</ul>
                 </div>
                 <div>
                   <h4>手順</h4>
-                  <ol>
-                    {recipe.steps.map((step, idx) => <li key={idx}>{step}</li>)}
-                  </ol>
+                  <ol>{recipe.steps.map((step, idx) => <li key={idx}>{step}</li>)}</ol>
                 </div>
               </div>
             </div>
@@ -385,17 +383,35 @@ function App() {
       <section className="panel recipesPanel noPrint">
         <div className="sectionHeader">
           <h2>レシピ一覧</h2>
-          <select value={tagFilter} onChange={(e) => setTagFilter(e.target.value)}>
-            {tags.map((tag) => <option key={tag} value={tag}>{tag === "all" ? "すべて" : tag}</option>)}
-          </select>
+          <div className="controls">
+            {customRecipes.length > 0 && (
+              <button className="secondary" onClick={exportCustomRecipes}>
+                <Download size={15} />JSONエクスポート
+              </button>
+            )}
+            <button className="secondary" onClick={() => setEditorOpen(true)}>
+              <Plus size={15} />レシピを追加
+            </button>
+            <select value={tagFilter} onChange={(e) => setTagFilter(e.target.value)}>
+              {tags.map((tag) => <option key={tag} value={tag}>{tag === "all" ? "すべて" : tag}</option>)}
+            </select>
+          </div>
         </div>
         <div className="recipeGrid">
           {filteredRecipes.map((recipe) => (
             <article className="recipeCard" key={recipe.id}>
-              <h3>{recipe.name}</h3>
+              <div className="recipeCardHeader">
+                <h3>{recipe.name}</h3>
+                {recipe.id.startsWith("custom-") && (
+                  <button className="removeBtn" onClick={() => deleteCustomRecipe(recipe.id)} aria-label="削除">
+                    <X size={14} />
+                  </button>
+                )}
+              </div>
               <p>{recipe.description}</p>
               <div className="tags">
                 {recipe.tags.map((tag) => <span key={tag}>{tag}</span>)}
+                {recipe.id.startsWith("custom-") && <span className="customBadge">追加</span>}
               </div>
               <div className="meta">
                 <span>{recipe.servings}人分</span>
@@ -404,15 +420,9 @@ function App() {
               <details>
                 <summary>材料・手順を見る</summary>
                 <h4>材料</h4>
-                <ul>
-                  {recipe.ingredients.map((ing, idx) => (
-                    <li key={idx}>{ing.name}: {ing.amount} {ing.unit}</li>
-                  ))}
-                </ul>
+                <ul>{recipe.ingredients.map((ing, idx) => <li key={idx}>{ing.name}: {ing.amount} {ing.unit}</li>)}</ul>
                 <h4>手順</h4>
-                <ol>
-                  {recipe.steps.map((step, idx) => <li key={idx}>{step}</li>)}
-                </ol>
+                <ol>{recipe.steps.map((step, idx) => <li key={idx}>{step}</li>)}</ol>
                 <h4>道具</h4>
                 <p>{recipe.tools.join(" / ")}</p>
               </details>
@@ -425,6 +435,23 @@ function App() {
         <p>材料の単位は同じ単位だけ合算します。「適量」は買い忘れ防止項目として表示します。</p>
       </footer>
 
+      {pickerOpen && (
+        <RecipePicker
+          allRecipes={allRecipes}
+          onSelect={handlePickerSelect}
+          onClose={() => setPickerOpen(null)}
+          onAddNew={() => { setPickerOpen(null); setEditorOpen(true); }}
+        />
+      )}
+
+      {editorOpen && (
+        <RecipeEditor
+          allRecipes={allRecipes}
+          onSave={handleEditorSave}
+          onClose={() => setEditorOpen(false)}
+        />
+      )}
+
       {activePopover && popoverRecipe && (
         <div className="popoverOverlay" onClick={() => setActivePopover(null)}>
           <div className="popoverCard" onClick={(e) => e.stopPropagation()}>
@@ -433,23 +460,15 @@ function App() {
               <button className="closeBtn" onClick={() => setActivePopover(null)}>✕</button>
             </div>
             <p className="popoverDesc">{popoverRecipe.description}</p>
-            <div className="tags">
-              {popoverRecipe.tags.map((tag) => <span key={tag}>{tag}</span>)}
-            </div>
+            <div className="tags">{popoverRecipe.tags.map((tag) => <span key={tag}>{tag}</span>)}</div>
             <div className="meta">
               <span>{popoverRecipe.servings}人分</span>
               <span>約{popoverRecipe.cost.toLocaleString()}円</span>
             </div>
             <h4>材料</h4>
-            <ul>
-              {popoverRecipe.ingredients.map((ing, idx) => (
-                <li key={idx}>{ing.name}: {ing.amount} {ing.unit}</li>
-              ))}
-            </ul>
+            <ul>{popoverRecipe.ingredients.map((ing, idx) => <li key={idx}>{ing.name}: {ing.amount} {ing.unit}</li>)}</ul>
             <h4>手順</h4>
-            <ol>
-              {popoverRecipe.steps.map((step, idx) => <li key={idx}>{step}</li>)}
-            </ol>
+            <ol>{popoverRecipe.steps.map((step, idx) => <li key={idx}>{step}</li>)}</ol>
             <h4>道具</h4>
             <p>{popoverRecipe.tools.join(" / ")}</p>
           </div>

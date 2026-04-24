@@ -1,0 +1,23 @@
+{
+  "name": "キャンプ飯プランナー",
+  "short_name": "キャンプ飯",
+  "description": "キャンプの食事プランと買い物リストを自動集計",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#f6f3ec",
+  "theme_color": "#7c5f35",
+  "lang": "ja",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
