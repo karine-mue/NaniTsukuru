@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Plus, X } from "lucide-react";
 
-const CATEGORIES = ["肉・魚", "野菜", "乳製品", "主食", "缶詰・乾物", "調味料", "消耗品", "その他"];
+const CATEGORIES = ["肉・魚", "野菜", "果物", "卵", "乳製品", "主食", "缶詰・乾物", "菓子", "調味料", "消耗品", "その他"];
 
 function parseIngredientLine(line) {
   const t = line.trim();

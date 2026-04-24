@@ -451,5 +451,191 @@
         "category": "主食"
       }
     ]
+  },
+  {
+    "id": "camp-smores",
+    "name": "焚き火スモア",
+    "servings": 2,
+    "cost": 900,
+    "tags": ["デザート", "焚き火", "簡単", "夜向け", "甘い"],
+    "description": "焚き火の余熱でマシュマロを炙り、チョコとクラッカーで挟む定番キャンプデザート。調理というより火を囲む時間そのものを食べるメニュー。",
+    "tools": ["串または長めのフォーク", "焚き火台"],
+    "steps": [
+      "マシュマロを串に刺す。",
+      "焚き火の炎ではなく熾火に近い位置でゆっくり炙る。",
+      "表面がきつね色になったら、チョコとクラッカーで挟む。",
+      "少し待ってチョコが溶けたら食べる。"
+    ],
+    "ingredients": [
+      { "itemId": "marshmallow", "name": "マシュマロ", "amount": 1, "unit": "袋", "category": "菓子" },
+      { "itemId": "chocolate", "name": "板チョコ", "amount": 1, "unit": "枚", "category": "菓子" },
+      { "itemId": "cracker", "name": "クラッカーまたはビスケット", "amount": 1, "unit": "箱", "category": "菓子" }
+    ]
+  },
+  {
+    "id": "apple-butter-foil-bake",
+    "name": "焼きりんごバターシナモン",
+    "servings": 2,
+    "cost": 800,
+    "tags": ["デザート", "焚き火", "温かい", "簡単", "夜向け"],
+    "description": "りんごをアルミホイルで包んで焚き火や炭火のそばで温めるだけの温かいデザート。寒い夜に甘い湯気が出るタイプのキャンプ飯。",
+    "tools": ["アルミホイル", "ナイフ", "焚き火台または炭火"],
+    "steps": [
+      "りんごを半分またはくし切りにする。",
+      "アルミホイルにりんご、バター、砂糖、シナモンを乗せる。",
+      "しっかり包み、火の近くで10〜15分温める。",
+      "りんごが柔らかくなったら完成。"
+    ],
+    "ingredients": [
+      { "itemId": "apple", "name": "りんご", "amount": 1, "unit": "個", "category": "果物" },
+      { "itemId": "butter", "name": "バター", "amount": 20, "unit": "g", "category": "乳製品" },
+      { "itemId": "sugar", "name": "砂糖", "amount": 1, "unit": "適量", "category": "調味料" },
+      { "itemId": "cinnamon", "name": "シナモン", "amount": 1, "unit": "適量", "category": "調味料" },
+      { "itemId": "aluminum_foil", "name": "アルミホイル", "amount": 1, "unit": "適量", "category": "消耗品" }
+    ]
+  },
+  {
+    "id": "leftover-hotpot-zosui",
+    "name": "昨晩の鍋を活かした朝の雑炊",
+    "servings": 2,
+    "cost": 900,
+    "tags": ["朝向け", "リメイク", "温かい", "片付け楽", "遅起き対応"],
+    "description": "前夜の鍋つゆをそのまま朝食に回すリメイク雑炊。遅めに起きても鍋を温め直して米と卵を入れるだけなので、撤収前の朝に向いている。",
+    "tools": ["鍋", "バーナー", "おたま"],
+    "steps": [
+      "前夜の鍋つゆを再加熱する。",
+      "水分が少なければ水を少し足す。",
+      "ご飯を入れて弱火で温める。",
+      "溶き卵を回し入れ、軽く固まったら火を止める。",
+      "好みで刻みねぎや海苔を足す。"
+    ],
+    "ingredients": [
+      { "itemId": "leftover_hotpot_soup", "name": "前夜の鍋つゆ", "amount": 1, "unit": "残り分", "category": "その他" },
+      { "itemId": "rice", "name": "米またはパックご飯", "amount": 2, "unit": "人分", "category": "主食" },
+      { "itemId": "egg", "name": "卵", "amount": 2, "unit": "個", "category": "卵" },
+      { "itemId": "green_onion", "name": "刻みねぎ", "amount": 1, "unit": "適量", "category": "野菜" },
+      { "itemId": "nori", "name": "海苔", "amount": 1, "unit": "適量", "category": "缶詰・乾物" }
+    ]
+  },
+  {
+    "id": "seafood-miso-hotpot",
+    "name": "あったか海鮮味噌鍋",
+    "servings": 2,
+    "cost": 3200,
+    "tags": ["夜向け", "鍋", "魚介", "温かい", "寒冷対応"],
+    "description": "肉料理に寄りがちなキャンプ飯の中で、身体を温めつつ重くなりすぎない海鮮鍋。味噌ベースにすると魚介の匂いがまとまり、夜の冷え込みにも強い。",
+    "tools": ["鍋", "バーナー", "包丁", "まな板"],
+    "steps": [
+      "鍋に水、味噌、顆粒だしを入れて温める。",
+      "白菜、きのこ、長ねぎを入れて煮る。",
+      "野菜が柔らかくなったら鮭、えび、冷凍シーフードを入れる。",
+      "魚介に火が通ったら完成。",
+      "残ったつゆは翌朝の雑炊に回せる。"
+    ],
+    "ingredients": [
+      { "itemId": "salmon", "name": "鮭切り身", "amount": 2, "unit": "切れ", "category": "肉・魚" },
+      { "itemId": "shrimp", "name": "えび", "amount": 6, "unit": "尾", "category": "肉・魚" },
+      { "itemId": "frozen_seafood_mix", "name": "冷凍シーフードミックス", "amount": 200, "unit": "g", "category": "肉・魚" },
+      { "itemId": "hakusai", "name": "白菜", "amount": 0.25, "unit": "株", "category": "野菜" },
+      { "itemId": "long_green_onion", "name": "長ねぎ", "amount": 1, "unit": "本", "category": "野菜" },
+      { "itemId": "mushroom_mix", "name": "きのこミックス", "amount": 1, "unit": "袋", "category": "野菜" },
+      { "itemId": "miso", "name": "味噌", "amount": 3, "unit": "大さじ", "category": "調味料" },
+      { "itemId": "dashi_powder", "name": "顆粒だし", "amount": 1, "unit": "小さじ", "category": "調味料" }
+    ]
+  },
+  {
+    "id": "aquapazza-camp-pan",
+    "name": "白身魚とあさりのキャンプアクアパッツァ",
+    "servings": 2,
+    "cost": 3400,
+    "tags": ["夜向け", "魚介", "スキレット", "見栄え", "白ワイン"],
+    "description": "スキレットや浅めの鍋で作れる魚介メニュー。切り身魚を使えば下処理が軽く、キャンプ場でも作りやすい。パンを添えると汁まで食べられる。",
+    "tools": ["スキレットまたは浅鍋", "バーナー", "蓋またはアルミホイル"],
+    "steps": [
+      "白身魚に軽く塩を振る。",
+      "スキレットにオリーブオイルとにんにくを入れて温める。",
+      "魚、あさり、ミニトマト、白ワインを入れて蓋をする。",
+      "魚に火が通り、あさりが開いたら完成。",
+      "残った汁はパンにつけて食べる。"
+    ],
+    "ingredients": [
+      { "itemId": "white_fish", "name": "白身魚切り身", "amount": 2, "unit": "切れ", "category": "肉・魚" },
+      { "itemId": "clam", "name": "あさり", "amount": 200, "unit": "g", "category": "肉・魚" },
+      { "itemId": "mini_tomato", "name": "ミニトマト", "amount": 8, "unit": "個", "category": "野菜" },
+      { "itemId": "garlic", "name": "にんにく", "amount": 2, "unit": "片", "category": "野菜" },
+      { "itemId": "white_wine", "name": "白ワイン", "amount": 100, "unit": "ml", "category": "調味料" },
+      { "itemId": "olive_oil", "name": "オリーブオイル", "amount": 1, "unit": "適量", "category": "調味料" },
+      { "itemId": "salt_pepper", "name": "塩こしょう", "amount": 1, "unit": "適量", "category": "調味料" },
+      { "itemId": "baguette", "name": "バゲット", "amount": 1, "unit": "本", "category": "主食" }
+    ]
+  },
+  {
+    "id": "salmon-chanmeryu-foil",
+    "name": "鮭ときのこの味噌バターホイル焼き",
+    "servings": 2,
+    "cost": 2300,
+    "tags": ["夜向け", "魚介", "ホイル焼き", "簡単", "温かい"],
+    "description": "魚メニューの中でも失敗しにくいホイル焼き。鮭、きのこ、味噌、バターを包んで火にかけるだけで、白米にもパンにも合う。",
+    "tools": ["アルミホイル", "フライパンまたは焚き火台", "バーナー"],
+    "steps": [
+      "アルミホイルに鮭、きのこ、味噌、バターを乗せる。",
+      "酒を少量加えて包む。",
+      "フライパンまたは網の上で10〜15分加熱する。",
+      "鮭に火が通ったら完成。"
+    ],
+    "ingredients": [
+      { "itemId": "salmon", "name": "鮭切り身", "amount": 2, "unit": "切れ", "category": "肉・魚" },
+      { "itemId": "mushroom_mix", "name": "きのこミックス", "amount": 1, "unit": "袋", "category": "野菜" },
+      { "itemId": "miso", "name": "味噌", "amount": 2, "unit": "大さじ", "category": "調味料" },
+      { "itemId": "butter", "name": "バター", "amount": 20, "unit": "g", "category": "乳製品" },
+      { "itemId": "cooking_sake", "name": "料理酒", "amount": 50, "unit": "ml", "category": "調味料" },
+      { "itemId": "aluminum_foil", "name": "アルミホイル", "amount": 1, "unit": "適量", "category": "消耗品" }
+    ]
+  },
+  {
+    "id": "clam-chowder-camp",
+    "name": "キャンプのあったかクラムチャウダー",
+    "servings": 2,
+    "cost": 2200,
+    "tags": ["朝夜兼用", "魚介", "スープ", "温かい", "パンに合う"],
+    "description": "冷える朝晩に向く白いスープ。あさり缶を使えば砂抜き不要で、キャンプでも扱いやすい。パンを合わせると朝食にも夜の副菜にもなる。",
+    "tools": ["鍋", "バーナー", "おたま"],
+    "steps": [
+      "玉ねぎ、じゃがいも、ベーコンを炒める。",
+      "水、牛乳、あさり缶、コンソメを加えて煮る。",
+      "じゃがいもが柔らかくなったら塩こしょうで整える。",
+      "パンと合わせて食べる。"
+    ],
+    "ingredients": [
+      { "itemId": "canned_clam", "name": "あさり缶", "amount": 1, "unit": "缶", "category": "缶詰・乾物" },
+      { "itemId": "bacon", "name": "ベーコン", "amount": 100, "unit": "g", "category": "肉・魚" },
+      { "itemId": "onion", "name": "玉ねぎ", "amount": 1, "unit": "個", "category": "野菜" },
+      { "itemId": "potato", "name": "じゃがいも", "amount": 2, "unit": "個", "category": "野菜" },
+      { "itemId": "milk", "name": "牛乳", "amount": 500, "unit": "ml", "category": "乳製品" },
+      { "itemId": "consomme", "name": "コンソメ", "amount": 2, "unit": "個", "category": "調味料" },
+      { "itemId": "butter", "name": "バター", "amount": 10, "unit": "g", "category": "乳製品" },
+      { "itemId": "salt_pepper", "name": "塩こしょう", "amount": 1, "unit": "適量", "category": "調味料" },
+      { "itemId": "bread", "name": "パン", "amount": 2, "unit": "人分", "category": "主食" }
+    ]
+  },
+  {
+    "id": "banana-chocolate-foil",
+    "name": "焚き火バナナチョコ",
+    "servings": 2,
+    "cost": 700,
+    "tags": ["デザート", "焚き火", "簡単", "甘い"],
+    "description": "バナナに切れ込みを入れてチョコを挟み、皮ごと温めるだけのキャンプデザート。道具が少なく、スモアよりも片付けが軽い。",
+    "tools": ["ナイフ", "アルミホイル", "焚き火台またはバーナー"],
+    "steps": [
+      "バナナの皮に縦に切れ込みを入れる。",
+      "割ったチョコを切れ込みに挟む。",
+      "アルミホイルで包み、火の近くで5〜10分温める。",
+      "チョコが溶けたらスプーンで食べる。"
+    ],
+    "ingredients": [
+      { "itemId": "banana", "name": "バナナ", "amount": 2, "unit": "本", "category": "果物" },
+      { "itemId": "chocolate", "name": "板チョコ", "amount": 0.5, "unit": "枚", "category": "菓子" },
+      { "itemId": "aluminum_foil", "name": "アルミホイル", "amount": 1, "unit": "適量", "category": "消耗品" }
+    ]
   }
 ]

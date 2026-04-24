@@ -10,7 +10,7 @@ const MAX_PER_SLOT = 4;
 const STORAGE_KEY = "nanitsukuru_custom_recipes";
 
 const categoryOrder = [
-  "肉・魚", "野菜", "乳製品", "主食", "缶詰・乾物", "調味料", "消耗品", "その他"
+  "肉・魚", "野菜", "果物", "卵", "乳製品", "主食", "缶詰・乾物", "菓子", "調味料", "消耗品", "その他"
 ];
 
 function generateMealSlots(nights) {
