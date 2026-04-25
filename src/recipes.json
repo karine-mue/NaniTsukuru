@@ -619,6 +619,59 @@
     ]
   },
   {
+    "id": "campfire-easy-pizza",
+    "name": "焚き火台簡易ピザ",
+    "servings": 2,
+    "cost": 1800,
+    "tags": ["昼夜兼用", "焚き火", "簡単", "見栄え", "子ども向け"],
+    "description": "ピザ生地とソースと具材はスーパーで買ってくる前提の簡易ピザ。生地から作らないので手間が少なく、焚き火台の網の上にアルミホイルで覆って焼くだけで完成する。",
+    "tools": ["焚き火台", "網", "アルミホイル"],
+    "steps": [
+      "ピザ生地を広げ、ピザソースを塗る。",
+      "好みの具材（ウインナー、コーン、ピーマンなど）を乗せる。",
+      "ピザ用チーズを全体にかける。",
+      "焚き火台の網の上に置き、アルミホイルをドーム状に被せる。",
+      "中〜弱火で10〜15分、チーズが溶けて生地の端がきつね色になったら完成。"
+    ],
+    "ingredients": [
+      { "itemId": "pizza_dough", "name": "市販のピザ生地", "amount": 2, "unit": "枚", "category": "主食" },
+      { "itemId": "pizza_sauce", "name": "市販のピザソース", "amount": 1, "unit": "瓶", "category": "調味料" },
+      { "itemId": "pizza_cheese", "name": "ピザ用チーズ", "amount": 150, "unit": "g", "category": "乳製品" },
+      { "itemId": "sausage", "name": "ウインナー", "amount": 4, "unit": "本", "category": "肉・魚" },
+      { "itemId": "corn", "name": "コーン缶", "amount": 0.5, "unit": "缶", "category": "缶詰・乾物" },
+      { "itemId": "green_pepper", "name": "ピーマン", "amount": 1, "unit": "個", "category": "野菜" },
+      { "itemId": "aluminum_foil", "name": "アルミホイル", "amount": 1, "unit": "適量", "category": "消耗品" }
+    ]
+  },
+  {
+    "id": "camp-paella",
+    "name": "焚き火パエリア",
+    "servings": 2,
+    "cost": 2800,
+    "tags": ["夜向け", "米料理", "魚介", "焚き火感", "見栄え"],
+    "description": "生米から炊き上げるキャンプパエリア。米を事前に炊かず、具材と一緒に水分を吸わせながら仕上げるのがポイント。フライパン一つで完結する。",
+    "tools": ["大きめフライパンまたはスキレット", "バーナー", "蓋またはアルミホイル", "包丁", "まな板"],
+    "steps": [
+      "オリーブオイルとにんにくをフライパンで弱火で温め、香りを出す。",
+      "玉ねぎ、パプリカを加えて中火で炒める。",
+      "生米を加えてオイルをなじませるように1〜2分炒める。",
+      "水またはスープ、コンソメを加え、全体を均一にならす。",
+      "えびとあさりを上に並べ、蓋またはアルミホイルで覆って中火で15〜20分炊く。",
+      "水分がほぼなくなったら火を止め、5分蒸らして完成。"
+    ],
+    "ingredients": [
+      { "itemId": "rice_raw", "name": "生米", "amount": 300, "unit": "g", "category": "主食" },
+      { "itemId": "shrimp", "name": "えび", "amount": 8, "unit": "尾", "category": "肉・魚" },
+      { "itemId": "canned_clam", "name": "あさり缶", "amount": 1, "unit": "缶", "category": "缶詰・乾物" },
+      { "itemId": "onion", "name": "玉ねぎ", "amount": 1, "unit": "個", "category": "野菜" },
+      { "itemId": "paprika", "name": "パプリカ", "amount": 1, "unit": "個", "category": "野菜" },
+      { "itemId": "garlic", "name": "にんにく", "amount": 2, "unit": "片", "category": "野菜" },
+      { "itemId": "olive_oil", "name": "オリーブオイル", "amount": 1, "unit": "適量", "category": "調味料" },
+      { "itemId": "consomme", "name": "コンソメ", "amount": 2, "unit": "個", "category": "調味料" },
+      { "itemId": "salt_pepper", "name": "塩こしょう", "amount": 1, "unit": "適量", "category": "調味料" }
+    ]
+  },
+  {
     "id": "banana-chocolate-foil",
     "name": "焚き火バナナチョコ",
     "servings": 2,
